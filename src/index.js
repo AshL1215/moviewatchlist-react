@@ -1,3 +1,11 @@
+// Parse Initialization
+import * as environments from './environments'; // Import your environment variables
+import Parse from 'parse'; // Import the Parse SDK
+
+// Initialize Parse
+Parse.initialize(environments.APPLICATION_ID, environments.JAVASCRIPT_KEY);
+Parse.serverURL = environments.SERVER_URL;
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
