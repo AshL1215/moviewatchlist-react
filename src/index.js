@@ -1,7 +1,5 @@
 // Parse Initialization
 // Importing environment variables
-import * as environments from './environments'; 
-import Parse from 'parse'; 
 
 // Initialize Parse
 Parse.initialize(environments.APPLICATION_ID, environments.JAVASCRIPT_KEY);
