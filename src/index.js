@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import * as environments from './environments';
 import Parse from 'parse';
 
-// DO INITIALIZATION
+// INITIALIZATION
 Parse.initialize(environments.APPLICATION_ID, environments.JAVASCRIPT_KEY);
 Parse.serverURL = environments.SERVER_URL;
 
