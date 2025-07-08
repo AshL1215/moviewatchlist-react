@@ -1,5 +1,7 @@
 import React from 'react';
 
+// Watchlist component displays all movies currently in the user's watchlist
+// and provides the option to remove them
 const Watchlist = ({ list, onRemove }) => {
   return (
     <div>
@@ -8,10 +10,10 @@ const Watchlist = ({ list, onRemove }) => {
         <p>No movies currently on the watchlist.</p>
       ) : (
         <ul>
-          {list.map((movie) => (
-            <li key={movie.id}>
-              {movie.title}
-              <button onClick={() => onRemove(movie.id)}>Remove</button>
+          {list.map((item) => (
+            <li key={item.id}>
+              {item.title} ({item.year}) - {item.genre}
+              <button onClick={() => onRemove(item.id)}>Remove</button>
             </li>
           ))}
         </ul>

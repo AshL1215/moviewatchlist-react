@@ -1,31 +1,58 @@
-//MainMovie is the homepage component that handles movie search, selection, and watchlist logic
+// MainMovie is the homepage component that handles movie search, selection, and watchlist logic using Parse
 import React, { useEffect, useState } from 'react';
 import { searchMovies } from '../Models/MoviesModel';
+import { addMovie, removeMovie, getWatchlist } from '../Models/WatchlistModel';
 import SearchBar from './SearchBar';
 import MoviesDisplay from './MoviesDisplay';
 import Watchlist from './Watchlist';
 
 const MainMovie = () => {
-      // State hooks for movie list, search query, and watchlist
+  // State hooks for movie list, search query, and watchlist
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
   const [watchlist, setWatchlist] = useState([]);
 
-    // Load all movies from the Parse backend when component mounts
+  // Load movies and watchlist from Parse backend on mount
   useEffect(() => {
-    searchMovies('').then(setMovies); // Empty string = fetch all movies
+    searchMovies('').then(setMovies); // fetch all movies
+    loadWatchlist(); // fetch watchlist from backend
   }, []);
-  
-  // Adds a movie to the user's watchlist
-  const handleAddToWatchlist = (movie) => {
-    if (!watchlist.some((m) => m.id === movie.id)) {
-      setWatchlist([...watchlist, movie]);
+
+  // Helper function to load the watchlist from Parse
+  const loadWatchlist = async () => {
+    try {
+      const items = await getWatchlist();
+      // Update state with movie info and its corresponding watchlist item id
+      const formatted = items.map(item => ({
+        id: item.id, // watchlist item ID (used to remove)
+        ...item.movie
+      }));
+      setWatchlist(formatted);
+    } catch (error) {
+      console.error('Error loading watchlist:', error);
     }
   };
-  // Removes a movie from the user's watchlist
 
-  const handleRemoveFromWatchlist = (id) => {
-    setWatchlist(watchlist.filter((m) => m.id !== id));
+  // Adds a movie to the user's watchlist via Parse
+  const handleAddToWatchlist = async (movie) => {
+    if (!watchlist.some((m) => m.title === movie.title)) {
+      try {
+        await addMovie(movie); // save to Parse
+        await loadWatchlist(); // refresh watchlist from backend
+      } catch (err) {
+        console.error('Failed to add movie to watchlist:', err);
+      }
+    }
+  };
+
+  // Removes a movie from the user's watchlist via Parse
+  const handleRemoveFromWatchlist = async (watchItemId) => {
+    try {
+      await removeMovie(watchItemId); // delete from Parse
+      await loadWatchlist(); // refresh watchlist from backend
+    } catch (err) {
+      console.error('Failed to remove movie from watchlist:', err);
+    }
   };
 
   // Filter movies based on search query
