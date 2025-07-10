@@ -1,10 +1,18 @@
 // Main routing component for the application
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Components from "./Main/Components";
+import * as Env from "../environments";
+import Parse from "parse";
+
+Parse.initialize(Env.APPLICATION_ID, Env.JAVASCRIPT_KEY);
+Parse.serverURL = Env.SERVER_URL;
 
 // Importing page-level components
-import MainMovie from './MainMovie';
-import About from './About';
+import MainMovie from './Main/MainMovie';
+import About from './Auth/About';
+import AuthLogin from './Auth/authlogin';
+import AuthRegister from './Auth/authregister';
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 
 function App() {
   return (
@@ -12,13 +20,10 @@ function App() {
       <div>
         {/* Navigation */}
         <nav>
-          <Link to="/">Home</Link> | <Link to="/about">About</Link>
+          <Link to="/">Home</Link>  
+          <Link to="/about">About</Link>
         </nav>
-
-        <Routes>
-          <Route path="/" element={<MainMovie />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
+        <AppRoutes />
       </div>
     </Router>
   );
