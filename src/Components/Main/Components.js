@@ -15,7 +15,7 @@ import AuthLogin from "../Auth/authlogin";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
 import MainMovie from "../MainMovie.js";
 
-// Pages Organization
+// Site Organization
 // Public Route
 // About Page with button for login and register About.js
 // Login Page authlogin.js
@@ -34,8 +34,9 @@ const Components = () => {
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/login" element={<AuthLogin />} />
 
-        // Protected Route
-        <Route path="/mainmovie" element={<ProtectedRoute element={MainMovie} /> }/>
+        // Protected Routes
+        <Route path="/" element={<ProtectedRoute element={MainMovie} /> }/>
+        <Route path="*" element={<Navigate to="/about" replace />} />
       </Routes>
     </Router>
   )
