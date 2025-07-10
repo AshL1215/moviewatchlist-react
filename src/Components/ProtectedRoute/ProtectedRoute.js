@@ -2,7 +2,7 @@
 // import react and user info from other pages
 import React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { checkUser } from "../Auth/AuthService";
+import { checkUser } from "../Auth/authservices";
 
 // Defining the protected route element
 const ProtectedRoute = ({ element: Component, ...rest }) => {
