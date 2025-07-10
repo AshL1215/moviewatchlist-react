@@ -5,18 +5,11 @@ import {
   Navigate,
   Routes,
   Route,
+  Link,
 } from "react-router-dom";
 import Components from "./Main/Components";
-import * as Env from "../../environments";
+import * as Env from "../environments";
 import Parse from "parse";
-
-// Importing page-level components
-import MainMovie from './Main/MainMovie';
-import About from './Auth/About';
-import AuthLogin from './Auth/authlogin';
-import AuthRegister from './Auth/authregister';
-import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
-
 
 Parse.initialize(Env.APPLICATION_ID, Env.JAVASCRIPT_KEY);
 Parse.serverURL = Env.SERVER_URL;
