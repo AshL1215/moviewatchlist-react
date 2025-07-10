@@ -13,7 +13,7 @@ import About from "../Auth/About.js";
 import AuthRegister from "../Auth/authregister";
 import AuthLogin from "../Auth/authlogin";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
-import MainMovie from "../MainMovie.js";
+import MainMovie from "./MainMovie.js";
 
 // Site Organization
 // Public Route
