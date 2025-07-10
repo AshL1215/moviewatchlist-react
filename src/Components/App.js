@@ -1,11 +1,14 @@
 // Main routing component for the application
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Routes,
+  Route,
+} from "react-router-dom";
 import Components from "./Main/Components";
-import * as Env from "../environments";
+import * as Env from "../../environments";
 import Parse from "parse";
-
-Parse.initialize(Env.APPLICATION_ID, Env.JAVASCRIPT_KEY);
-Parse.serverURL = Env.SERVER_URL;
 
 // Importing page-level components
 import MainMovie from './Main/MainMovie';
@@ -13,6 +16,10 @@ import About from './Auth/About';
 import AuthLogin from './Auth/authlogin';
 import AuthRegister from './Auth/authregister';
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+
+
+Parse.initialize(Env.APPLICATION_ID, Env.JAVASCRIPT_KEY);
+Parse.serverURL = Env.SERVER_URL;
 
 function App() {
   return (
