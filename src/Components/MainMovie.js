@@ -1,4 +1,3 @@
-// MainMovie is the homepage component that handles movie search, selection, and watchlist logic using Parse
 import React, { useEffect, useState } from 'react';
 import { searchMovies } from '../Models/MoviesModel';
 import { addMovie, removeMovie, getWatchlist } from '../Models/WatchlistModel';
@@ -7,55 +6,57 @@ import MoviesDisplay from './MoviesDisplay';
 import Watchlist from './Watchlist';
 
 const MainMovie = () => {
-  // State hooks for movie list, search query, and watchlist
+  // State for movie list, search input, and watchlist
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
   const [watchlist, setWatchlist] = useState([]);
 
-  // Load movies and watchlist from Parse backend on mount
+  // Load all movies and the watchlist on component mount
   useEffect(() => {
-    searchMovies('').then(setMovies); // fetch all movies
-    loadWatchlist(); // fetch watchlist from backend
+    searchMovies('').then(setMovies);
+    loadWatchlist();
   }, []);
 
-  // Helper function to load the watchlist from Parse
+  // Helper to load the user's watchlist from Parse
   const loadWatchlist = async () => {
     try {
       const items = await getWatchlist();
-      // Update state with movie info and its corresponding watchlist item id
+
+      // Flatten watchlist data structure so Watchlist component can use it
       const formatted = items.map(item => ({
-        id: item.id, // watchlist item ID (used to remove)
-        ...item.movie
+        id: item.id,
+        ...item.movie // spread movie fields: title, year, genre
       }));
+
       setWatchlist(formatted);
     } catch (error) {
       console.error('Error loading watchlist:', error);
     }
   };
 
-  // Adds a movie to the user's watchlist via Parse
+  // Add a movie to the watchlist and refresh
   const handleAddToWatchlist = async (movie) => {
     if (!watchlist.some((m) => m.title === movie.title)) {
       try {
-        await addMovie(movie); // save to Parse
-        await loadWatchlist(); // refresh watchlist from backend
+        await addMovie(movie); // Add to Parse
+        await loadWatchlist(); // Refresh UI
       } catch (err) {
         console.error('Failed to add movie to watchlist:', err);
       }
     }
   };
 
-  // Removes a movie from the user's watchlist via Parse
+  // Remove a movie from the watchlist and refresh
   const handleRemoveFromWatchlist = async (watchItemId) => {
     try {
-      await removeMovie(watchItemId); // delete from Parse
-      await loadWatchlist(); // refresh watchlist from backend
+      await removeMovie(watchItemId); // Remove from Parse
+      await loadWatchlist(); // Refresh UI
     } catch (err) {
       console.error('Failed to remove movie from watchlist:', err);
     }
   };
 
-  // Filter movies based on search query
+  // Filter movies based on search input
   const filtered = movies.filter((m) =>
     m.title.toLowerCase().includes(query.toLowerCase())
   );
@@ -64,6 +65,7 @@ const MainMovie = () => {
     <section>
       <h1>🎬 Movie Watchlist</h1>
       <SearchBar search={query} onSearchChange={setQuery} />
+
       <div className="grid">
         <ul className="movie-list">
           {filtered.map((m) => (
@@ -72,6 +74,7 @@ const MainMovie = () => {
             </li>
           ))}
         </ul>
+
         <MoviesDisplay movies={filtered} onAddMovie={handleAddToWatchlist} />
         <Watchlist list={watchlist} onRemove={handleRemoveFromWatchlist} />
       </div>

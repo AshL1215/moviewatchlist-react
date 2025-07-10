@@ -1,58 +1,72 @@
-// This is the Parse Model for the watchlist
 import Parse from "parse";
 
 const Movie = Parse.Object.extend("Movies");
 const WatchItem = Parse.Object.extend("WatchItem");
 
-// function to add movies to the watchlist
-export async function addMovie(movieParseObject){
-   const newWatchItem=new WatchItem();
-   newWatchItem.set("movie", movieParseObject);
-   
-    try {
-    const savedItem=await newWatchItem.save();
-    console.log("Movie added");
+// Adds a movie to the watchlist (creates or reuses movie Parse object)
+export async function addMovie(movieData) {
+  const query = new Parse.Query(Movie);
+  query.equalTo("title", movieData.title);
+  const existing = await query.first();
+
+  let movie;
+  if (existing) {
+    movie = existing;
+  } else {
+    movie = new Movie();
+    movie.set("title", movieData.title);
+    movie.set("year", movieData.year);
+    movie.set("genre", movieData.genre);
+    await movie.save(); // Save new movie if not found
+  }
+
+  const newWatchItem = new WatchItem();
+  newWatchItem.set("movie", movie); // Link movie pointer
+
+  try {
+    const savedItem = await newWatchItem.save();
+    console.log("✅ Movie added to watchlist");
     return savedItem;
-   } catch (error){
-    console.error("Could not save!", error);
+  } catch (error) {
+    console.error("❌ Could not save watchlist item:", error);
     throw error;
-   }
-   } 
+  }
+}
 
-   // function to remove movies from the watchlist
-   export async function removeMovie(WatchItemId){
-    const query = new Parse.Query(WatchItem);
-        try {
-            const WatchItem=await query.get(WatchItemId);
-            await WatchItem.destroy();
-            console.log("Movie removed");
-            }
-            catch (error) {
-                console.error("Movie could not be removed", error);
-                throw error;
-            }
-        }
+// Removes a movie from watchlist by WatchItem ID
+export async function removeMovie(watchItemId) {
+  const query = new Parse.Query(WatchItem);
+  try {
+    const item = await query.get(watchItemId);
+    await item.destroy();
+    console.log("🗑️ Movie removed from watchlist");
+  } catch (error) {
+    console.error("❌ Failed to remove movie:", error);
+    throw error;
+  }
+}
 
-// Displaying the Watchlist to the user descending by year
+// Gets watchlist items with their associated movie data
 export async function getWatchlist() {
-    const query = new Parse.Query(WatchItem);
-    query.include("movie");
-    query.descending("year");
+  const query = new Parse.Query(WatchItem);
+  query.include("movie");
+  query.descending("createdAt");
 
-    try {
-        const results =await query.find();
-        return results.map(item => {
-            const movie = item.get("movie");
-            return {
-                movie: {
-                    title: movie.get("title"),
-                    year: movie.get("year"),
-                    genre: movie.get("genre"),
-                }
-            }
-        });
-    } catch (error) {
-        console.error("Could not load watchlist:", error);
-        throw error;
-    }
+  try {
+    const results = await query.find();
+    return results.map(item => {
+      const movie = item.get("movie");
+      return {
+        id: item.id,
+        movie: {
+          title: movie.get("title"),
+          year: movie.get("year"),
+          genre: movie.get("genre")
+        }
+      };
+    });
+  } catch (error) {
+    console.error("❌ Could not load watchlist:", error);
+    throw error;
+  }
 }
