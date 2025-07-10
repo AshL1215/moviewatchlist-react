@@ -2,7 +2,6 @@
 // Import needed react features
 import React from "react";
 import {
-  BrowserRouter as Router,
   Navigate,
   Routes,
   Route,
@@ -27,7 +26,6 @@ import MainMovie from "./MainMovie.js";
 // Connecting all of the compknets to specific routes
 const Components = () => {
   return (
-    <Router>
       <Routes>
         // Public Routes
         <Route path="/about" element={<About />}/>
@@ -38,7 +36,6 @@ const Components = () => {
         <Route path="/" element={<ProtectedRoute element={MainMovie} /> }/>
         <Route path="*" element={<Navigate to="/about" replace />} />
       </Routes>
-    </Router>
   )
 }
 
