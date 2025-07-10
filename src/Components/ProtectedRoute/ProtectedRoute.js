@@ -9,6 +9,7 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   console.log("element: ", Component);
   const navigate = useNavigate();
   const goBackHandler = () => {
+    // Redirect to about us page if not logged in
     navigate("../Auth/about");
   };
   // Check if the user is authorized and if not display an error
