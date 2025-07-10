@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { searchMovies } from '../Models/MoviesModel';
-import { addMovie, removeMovie, getWatchlist } from '../Models/WatchlistModel';
-import SearchBar from './SearchBar';
-import MoviesDisplay from './MoviesDisplay';
-import Watchlist from './Watchlist';
+import { searchMovies } from '../../Models/MoviesModel';
+import { addMovie, removeMovie, getWatchlist } from '../../Models/WatchlistModel';
+import SearchBar from '../SearchBar';
+import MoviesDisplay from '../MoviesDisplay';
+import Watchlist from '../Watchlist';
 
 const MainMovie = () => {
   // State for movie list, search input, and watchlist
