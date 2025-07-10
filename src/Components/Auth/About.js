@@ -3,14 +3,13 @@
 // It displays information about the application when the user visits the about page.
 // import react features and other necessary files
 import React, { useEffect } from 'react';
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { checkUser } from "./authservices";
 
 function About() {
   const navigate = useNavigate();
-  // Redirect user if they are already logged in
- useEffect(() => {
+
+  useEffect(() => {
     if (checkUser()) {
       alert("You are already logged in");
       navigate("/");
@@ -18,23 +17,18 @@ function About() {
   }, [navigate]);
 
   return (
-  <div>
-  <h1>About This App</h1>
-  <p>
-    Our movie watchlist app allows you to explore our catalogue of movies and add them to your watchlist!
-  </p>
+    <div>
+      <h1>About This App</h1>
+      <p>
+        Our movie watchlist app allows you to explore our catalogue of movies and add them to your watchlist!
+      </p>
 
-  // Login and register buttons
-      <Link to="./authregister">
-        <button>Register</button>
-      </Link>
-      <br />
-      <br />
-      <Link to="./authlogin">
-        <button>Login</button>
-      </Link>
+      {/* ✅ Use absolute paths and add spacing */}
+      <Link to="/register"><button>Register</button></Link>
+      <br /><br />
+      <Link to="/login"><button>Login</button></Link>
     </div>
   );
-};
+}
 
-export default About
+export default About;

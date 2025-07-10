@@ -4,6 +4,9 @@ import { addMovie, removeMovie, getWatchlist } from '../../Models/WatchlistModel
 import SearchBar from '../SearchBar';
 import MoviesDisplay from '../MoviesDisplay';
 import Watchlist from '../Watchlist';
+import { logoutUser } from '../Auth/authservices';
+import { useNavigate } from 'react-router-dom';
+
 
 const MainMovie = () => {
   // State for movie list, search input, and watchlist
@@ -13,9 +16,28 @@ const MainMovie = () => {
 
   // Load all movies and the watchlist on component mount
   useEffect(() => {
-    searchMovies('').then(setMovies);
-    loadWatchlist();
-  }, []);
+  // Fetch movies only once
+  const fetchData = async () => {
+    const moviesData = await searchMovies('');
+    setMovies(moviesData);
+  };
+
+  fetchData();
+  loadWatchlist(); // Watchlist can change, so it's okay to reload
+}, []);
+
+
+  //logout function to clear user session and redirect
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();       // clear user session from Parse
+      navigate('/about');       // redirect to About page
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   // Helper to load the user's watchlist from Parse
   const loadWatchlist = async () => {
@@ -62,9 +84,10 @@ const MainMovie = () => {
   );
 
   return (
-    <section>
-      <h1>🎬 Movie Watchlist</h1>
-      <SearchBar search={query} onSearchChange={setQuery} />
+  <section>
+    <button onClick={handleLogout}>Logout</button>
+    <h1>🎬 Movie Watchlist</h1>
+    <SearchBar search={query} onSearchChange={setQuery} />
 
       <div className="grid">
         <ul className="movie-list">
