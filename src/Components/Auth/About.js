@@ -2,12 +2,13 @@
 // This is a simple About component for the Movie Watchlist application.
 // It displays information about the application when the user visits the about page.
 // import react features and other necessary files
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { checkUser } from "./authservices";
 
 function About() {
+  const navigate = useNavigate();
   // Redirect user if they are already logged in
  useEffect(() => {
     if (checkUser()) {
