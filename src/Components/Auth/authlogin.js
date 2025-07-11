@@ -1,34 +1,38 @@
-// User login
+// authlogin.js - Handles user login logic using Parse
+
 import React, { useState } from 'react';
-import { loginUser } from './authservices';
-import { useNavigate } from 'react-router-dom';
+import AuthForm from './authform';                  // Reusable form component
+import { loginUser } from './authservices';        // Function to log in the user
+import { useNavigate } from 'react-router-dom';    // For redirecting on success
 
 const AuthLogin = () => {
+  // Local state to track username and password inputs
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook to redirect after login
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Handles form submission
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Prevent default form refresh
     try {
-      await loginUser(username, password);
-      navigate('/');
+      await loginUser(username, password); // Call backend login
+      alert('Login successful!');
+      navigate('/'); // Redirect to home (MainMovie)
     } catch (err) {
-      setError(err.message);
+      alert('Login failed: ' + err.message);
     }
   };
 
+  // Render reusable AuthForm component
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Login</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+    <AuthForm
+      type="login"
+      username={username}
+      password={password}
+      setUsername={setUsername}
+      setPassword={setPassword}
+      onSubmit={handleLogin}
+    />
   );
 };
 

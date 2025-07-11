@@ -1,34 +1,38 @@
-// User registration
+// authregister.js - Handles user registration logic using Parse
+
 import React, { useState } from 'react';
-import { registerUser } from './authservices';
-import { useNavigate } from 'react-router-dom';
+import AuthForm from './authform';                   // Reusable form component
+import { registerUser } from './authservices';      // Function to register user
+import { useNavigate } from 'react-router-dom';     // For redirecting on success
 
 const AuthRegister = () => {
+  // Local state to track input fields
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Redirect hook
 
-  const handleSubmit = async (e) => {
+  // Handles form submission
+  const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await registerUser(username, password);
-      navigate('/');
+      await registerUser(username, password); // Call backend signup
+      alert('Registration successful!');
+      navigate('/'); // Redirect to home (MainMovie)
     } catch (err) {
-      setError(err.message);
+      alert('Registration failed: ' + err.message);
     }
   };
 
+  // Render reusable AuthForm component
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Register</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+    <AuthForm
+      type="register"
+      username={username}
+      password={password}
+      setUsername={setUsername}
+      setPassword={setPassword}
+      onSubmit={handleRegister}
+    />
   );
 };
 
