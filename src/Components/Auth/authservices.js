@@ -5,10 +5,12 @@ export function checkUser() {
   return !!Parse.User.current();
 }
 
-export async function registerUser(username, password) {
+export async function registerUser(username, password, favgenre, movieera) {
   const user = new Parse.User();
   user.set("username", username);
   user.set("password", password);
+  user.set("FavGenre", favgenre);
+  user.set("MovieEra", movieera);
 
   try {
     await user.signUp();

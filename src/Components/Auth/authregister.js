@@ -9,13 +9,15 @@ const AuthRegister = () => {
   // Local state to track input fields
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [favgenre, setFavgenre]= useState('');
+  const [movieera, setMovieera] = useState('');
   const navigate = useNavigate(); // Redirect hook
 
   // Handles form submission
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await registerUser(username, password); // Call backend signup
+      await registerUser(username, password, favgenre, movieera); // Call backend signup
       alert('Registration successful!');
       navigate('/'); // Redirect to home (MainMovie)
     } catch (err) {
@@ -29,8 +31,12 @@ const AuthRegister = () => {
       type="register"
       username={username}
       password={password}
+      favgenre= {favgenre}
+      movieera= {movieera}
       setUsername={setUsername}
       setPassword={setPassword}
+      setFavgenre= {setFavgenre}
+      setMovieera= {setMovieera}
       onSubmit={handleRegister}
     />
   );
