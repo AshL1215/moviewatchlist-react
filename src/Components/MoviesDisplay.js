@@ -4,6 +4,7 @@ const MoviesDisplay = ({ movies, onAddMovie }) => {
   return (
     <div>
       <h2>Available Movies</h2>
+      <div className="movie-container">
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
@@ -12,6 +13,7 @@ const MoviesDisplay = ({ movies, onAddMovie }) => {
           </li>
         ))}
       </ul>
+    </div>
     </div>
   );
 };
