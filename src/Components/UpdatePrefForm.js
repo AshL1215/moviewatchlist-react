@@ -1,6 +1,6 @@
 // This is the component that allows the user to update their movie prefences in the movie reccomendations tabs
 import React, { useEffect, useState } from 'react';
-import { getRec } from '../../Models/RecModel';
+import { getRec } from '../Models/RecModel';
 import Parse from 'parse';
 
 // Define the options for genres
@@ -25,7 +25,7 @@ const Eras = [
   "2020s-Present"
 ];
 
-const UserPreferencesForm = ({ favGenre, movieEra, onUpdate, loading, message }) => {
+const UpdatePrefForm = ({ favGenre, movieEra, onUpdate, loading, message }) => {
     // Intiializing preference states
     const [currentFavGenre, setCurrentFavGenre] = useState(favGenre);
     const [currentMovieEra, setCurrentMovieEra] = useState(movieEra);

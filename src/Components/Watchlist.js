@@ -6,6 +6,7 @@ const Watchlist = ({ list, onRemove }) => {
   return (
     <div>
       <h2>My Movie Watchlist</h2>
+      <div className="watchlist-container">
       {list.length === 0 ? (
         <p>No movies currently on the watchlist.</p>
       ) : (
@@ -19,7 +20,8 @@ const Watchlist = ({ list, onRemove }) => {
         </ul>
       )}
     </div>
-  );
+    </div>
+ );
 };
 
 export default Watchlist;

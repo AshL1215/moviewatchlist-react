@@ -6,9 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { getRec } from '../../Models/RecModel';
 import { updatePref } from '../Auth/authservices'; 
 import { addMovie, getWatchlist } from '../../Models/WatchlistModel';
-import RecMovieDisplay from '../Components/RecommendedMovieDisplay';
-import UpdatePrefForm from '../Components/UserPreferencesForm';
-
+import RecMovieDisplay from '../RecMovieDisplay';
+import UpdatePrefForm from '../UpdatePrefForm';
 
 const Recommendations = () => {
     const navigate = useNavigate();
@@ -87,7 +86,7 @@ const Recommendations = () => {
                     {loadingRecommendation ? 'Finding a movie...' : 'Get New Recommendation'}
                 </button>
                 {recError && <p>Error getting recommendation: {recError}</p>}
-                <RecommendedMovieDisplay movie={recommendedMovie} />
+                <RecMovieDisplay movie={recommendedMovie} />
                 
                 {!loadingRecommendation && !recError && !recommendedMovie && 
                     <p>Click the button to get your first recommendation!</p>}
@@ -95,7 +94,7 @@ const Recommendations = () => {
             
             <div className="UpdateHead">
                 <h2>Update Your Movie Preferences</h2>
-                <UserPreferencesForm
+                <UpdatePrefForm
                     favGenre={favGenre}
                     movieEra={movieEra}
                     onUpdate={handleUpdatePreferences} 

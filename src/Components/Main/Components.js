@@ -7,14 +7,13 @@ import {
   Route,
 } from "react-router-dom";
 
-// import auth files and about us page
+// import files and about us page
 import About from "../Auth/About.js";
 import AuthRegister from "../Auth/authregister";
 import AuthLogin from "../Auth/authlogin";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
 import MainMovie from "./MainMovie.js";
 import Recommendations from "./Reccomendations.js";
-
 
 // Site Organization
 // Public Route
@@ -38,7 +37,7 @@ const Components = () => {
         // Protected Routes
         <Route path="/" element={<ProtectedRoute element={MainMovie} /> }/>
         <Route path="*" element={<Navigate to="/about" replace />} />
-        <Route path="/recommendations" element={<Recomendations />}/>
+        <Route path="/recommendations" element={<ProtectedRoute element={Recommendations} />}/>
       </Routes>
   )
 }
