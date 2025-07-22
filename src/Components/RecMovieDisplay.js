@@ -3,7 +3,7 @@ import React from 'react';
 import {addMovie} from "../Models/WatchlistModel"
 
 // Check if there has been a movie reccomended
-const RecommendedMovieDisplay = ({ movie, onAddMovie }) => {
+const RecMovieDisplay = ({ movie, onAddMovie }) => {
     if (!movie) {
         return null;
     }

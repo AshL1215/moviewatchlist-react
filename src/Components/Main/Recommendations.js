@@ -3,20 +3,41 @@ import Parse from 'parse';
 import { logoutUser, updatePref } from '../Auth/authservices.js';
 import { useNavigate } from 'react-router-dom';
 import { getRec } from '../../Models/RecModel.js';
+import { addMovie, getWatchlist } from '../../Models/WatchlistModel.js';
 import RecMovieDisplay from '../RecMovieDisplay.js';
 import UpdatePrefForm from '../UpdatePrefForm.js';
 
+
 const Recommendations = () => {
   const navigate = useNavigate();
-
   const [recommendedMovie, setRecommendedMovie] = useState(null);
   const [loadingRecommendation, setLoadingRecommendation] = useState(false);
   const [recError, setRecError] = useState(null);
-
+  const [userWatchlist, setUserWatchlist] = useState([]);
   const [favGenre, setFavGenre] = useState('');
   const [movieEra, setMovieEra] = useState('');
   const [updateMessage, setUpdateMessage] = useState('');
   const [loadingUpdate, setLoadingUpdate] = useState(false);
+
+ // Helper to load the user's watchlist from Parse
+  const loadWatchlist = async () => {
+    try {
+      const items = await getWatchlist();
+
+      // Flatten watchlist data structure so Watchlist component can use it
+      const formatted = items.map(item => ({
+        id: item.id,
+        objectId: item.movie.objectId, 
+        title: item.movie.title,
+        year: item.movie.year,
+        genre: item.movie.genre
+      }));
+
+      setUserWatchlist(formatted);
+    } catch (error) {
+      console.error('Error loading watchlist:', error);
+    }
+  };
 
   useEffect(() => {
     const currentUser = Parse.User.current();
@@ -28,7 +49,28 @@ const Recommendations = () => {
     }
   }, []);
 
-  const handleGetRecommendation = async () => {
+  const handleAddtoWatchlist = async (movieParseObject) => {
+  const movieData = {
+  title: movieParseObject.get("title"),
+  year: movieParseObject.get("year"),
+  genre: movieParseObject.get("genre"),
+  objectId: movieParseObject.id
+        };
+  if (userWatchlist.some((m) => m.objectId === movieData.objectId)) {
+  alert(`${movieData.title} is already in your watchlist!`);
+  return;
+        }
+  try {
+      await addMovie(movieData);
+      await loadWatchlist(); // Refresh watchlist after adding
+      alert(`${movieData.title} added to watchlist!`);
+  } catch (err) {
+      console.error('Failed to add movie to watchlist:', err);
+      alert('Failed to add movie to watchlist: ' + err.message);
+        }
+    };
+      
+    const handleGetRecommendation = async () => {
     setLoadingRecommendation(true);
     setRecError(null);
     setRecommendedMovie(null);
@@ -40,7 +82,7 @@ const Recommendations = () => {
     } finally {
       setLoadingRecommendation(false);
     }
-  };
+  }
 
   const handleUpdatePreferences = async (newFavGenre, newMovieEra) => {
     setLoadingUpdate(true);

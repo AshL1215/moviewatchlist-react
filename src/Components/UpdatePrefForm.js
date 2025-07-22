@@ -17,7 +17,7 @@ const Eras = [
   "2020s-Present"
 ];
 
-const UserPreferencesForm = ({ favGenre, movieEra, onUpdate, loading, message }) => {
+const UpdatePrefForm = ({ favGenre, movieEra, onUpdate, loading, message }) => {
     // Intiializing preference states
     const [currentFavGenre, setCurrentFavGenre] = useState(favGenre);
     const [currentMovieEra, setCurrentMovieEra] = useState(movieEra);
