@@ -13,6 +13,8 @@ import AuthRegister from "../Auth/authregister";
 import AuthLogin from "../Auth/authlogin";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
 import MainMovie from "./MainMovie.js";
+import Recommendations from "./Reccomendations.js";
+
 
 // Site Organization
 // Public Route
@@ -21,7 +23,8 @@ import MainMovie from "./MainMovie.js";
 // Register Page authregister.js
 
 // Protected Route Page:
-// Movie Display MainMovie.js
+// MainMovie.js, Reccomendations.js
+
 
 // Connecting all of the compknets to specific routes
 const Components = () => {
@@ -35,6 +38,7 @@ const Components = () => {
         // Protected Routes
         <Route path="/" element={<ProtectedRoute element={MainMovie} /> }/>
         <Route path="*" element={<Navigate to="/about" replace />} />
+        <Route path="/recommendations" element={<Recomendations />}/>
       </Routes>
   )
 }
