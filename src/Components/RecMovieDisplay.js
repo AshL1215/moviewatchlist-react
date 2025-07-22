@@ -13,7 +13,7 @@ const RecMovieDisplay = ({ movie, onAddMovie }) => {
             <p><strong>Title:</strong> {movie.get("title")}</p>
             <p><strong>Year:</strong> {movie.get("year")}</p>
             <p><strong>Genre:</strong> {movie.get("genre")}</p>
-            <button onClick={() => addMovie(movie)}>
+            <button onClick={() => onAddMovie(movie)}>
                 Add to Watchlist
             </button>
         </div>
