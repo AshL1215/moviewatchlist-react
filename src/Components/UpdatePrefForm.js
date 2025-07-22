@@ -39,7 +39,7 @@ const UserPreferencesForm = ({ favGenre, movieEra, onUpdate, loading, message })
     // Make the change in the movie preference
     const handleSubmit = (e) => {
         e.preventDefault();
-        onUpdate(currentFavGenre, currentMovieEra); // Call the parent's update handler
+        onUpdate(currentFavGenre, currentMovieEra); 
     };
 
     return (
@@ -53,7 +53,7 @@ const UserPreferencesForm = ({ favGenre, movieEra, onUpdate, loading, message })
                     required
                 >
                     <option value="">-- Choose a Genre --</option>
-                    {GENRE_OPTIONS.map((genre) => (
+                    {Genres.map((genre) => (
                         <option key={genre} value={genre}>{genre}</option>
                     ))}
                 </select>
@@ -67,7 +67,7 @@ const UserPreferencesForm = ({ favGenre, movieEra, onUpdate, loading, message })
                     required
                 >
                     <option value="">-- Choose a Movie Era --</option>
-                    {ERA_OPTIONS.map((era) => (
+                    {Eras.map((era) => (
                         <option key={era} value={era}>{era}</option>
                     ))}
                 </select>
