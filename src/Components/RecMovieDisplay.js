@@ -1,7 +1,8 @@
 // This is the component that displays the recommended movie to the user
 import React from 'react';
 
-const RecMovieDisplay = ({ movie, onAddMovie }) => {
+// Check if there has been a movie reccomended
+const RecommendedMovieDisplay = ({ movie, onAddMovie }) => {
     if (!movie) {
         return null;
     }

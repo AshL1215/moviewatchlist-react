@@ -6,6 +6,7 @@ import {
   Route,
 } from "react-router-dom";
 
+// import files and about us page
 import About from "../Auth/About.js";
 import AuthRegister from "../Auth/authregister";
 import AuthLogin from "../Auth/authlogin";
