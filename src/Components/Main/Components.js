@@ -1,31 +1,36 @@
-// This file assigns the different pages of the app to protected or unprotected
 import React from "react";
-import {
-  Navigate,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
-// import files and about us page
 import About from "../Auth/About.js";
 import AuthRegister from "../Auth/authregister";
 import AuthLogin from "../Auth/authlogin";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
 import MainMovie from "./MainMovie.js";
-import Recommendations from "./Recommendations.js"; // Fixed import spelling
+import Recommendations from "./Recommendations.js";
 
 const Components = () => {
   return (
     <Routes>
-      {/* Public Routes */}
       <Route path="/about" element={<About />} />
       <Route path="/register" element={<AuthRegister />} />
       <Route path="/login" element={<AuthLogin />} />
 
-      {/* Protected Routes */}
-      <Route path="/" element={<ProtectedRoute element={MainMovie} />} />
-      <Route path="/recommendations" element={<ProtectedRoute element={Recommendations} />} />
-      <Route path="*" element={<Navigate to="/about" replace />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <MainMovie />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recommendations"
+        element={
+          <ProtectedRoute>
+            <Recommendations />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };

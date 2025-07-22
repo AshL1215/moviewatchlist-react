@@ -1,103 +1,185 @@
+// src/Components/Main/MainMovie.js
 import React, { useEffect, useState } from 'react';
-import { searchMovies } from '../../Models/MoviesModel';
+import { fetchAvailableMovies, searchMovies } from '../../Models/MoviesModel';
 import { addMovie, removeMovie, getWatchlist } from '../../Models/WatchlistModel';
-import SearchBar from '../SearchBar';
-import MoviesDisplay from '../MoviesDisplay';
 import Watchlist from '../Watchlist';
-import { logoutUser } from '../Auth/authservices';
-import { useNavigate } from 'react-router-dom';
+import SearchBar from '../SearchBar'; 
+import { getRatingsForMovie, saveRating } from '../../Models/RatingModel';
 
 const MainMovie = () => {
-  // State for movie list, search input, and watchlist
-  const [movies, setMovies] = useState([]);
-  const [query, setQuery] = useState('');
+  const [allMovies, setAllMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [watchlist, setWatchlist] = useState([]);
-  const navigate = useNavigate();
+  const [searchError, setSearchError] = useState('');
 
-  // Load the watchlist
+  const loadAllMovies = async () => {
+    const movies = await fetchAvailableMovies();
+    setAllMovies(movies);
+  };
+
   const loadWatchlist = async () => {
-    try {
-      const items = await getWatchlist(); 
-      const formatted = items.map(item => ({
-        id: item.id,
-        objectId: item.movie.objectId, 
-        title: item.movie.title,       
-        year: item.movie.year,        
-        genre: item.movie.genre      
-      }));
-      setWatchlist(formatted); 
-    } catch (error) {
-      console.error('Error loading watchlist in MainMovie:', error);
-    }
+    const items = await getWatchlist();
+    const formatted = items.map(item => ({
+      id: item.id,
+      objectId: item.movie.objectId,
+      title: item.movie.title,
+      year: item.movie.year,
+      genre: item.movie.genre
+    }));
+    setWatchlist(formatted);
   };
 
-  //logout function to clear user session and redirect
-  const handleLogout = async () => {
-    try {
-      await logoutUser();       // clear user session from Parse
-      navigate('/about');       // redirect to About page
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  // Add a movie to the watchlist and refresh
-  const handleAddToWatchlist = async (movie) => {
-    if (!watchlist.some((m) => m.title === movie.title)) {
-      try {
-        await addMovie(movie); // Add to Parse
-        await loadWatchlist(); // Refresh UI
-      } catch (err) {
-        console.error('Failed to add movie to watchlist:', err);
-      }
-    }
-  };
-
-  // Remove a movie from the watchlist and refresh
-  const handleRemoveFromWatchlist = async (watchItemId) => {
-    try {
-      await removeMovie(watchItemId); // Remove from Parse
-      await loadWatchlist(); // Refresh UI
-    } catch (err) {
-      console.error('Failed to remove movie from watchlist:', err);
-    }
-  };
-
-  // Filter movies based on search input
-  const filtered = movies.filter((m) =>
-    m.title.toLowerCase().includes(query.toLowerCase())
-  );
-
-    // Load all movies and the watchlist on component mount
   useEffect(() => {
-  // Fetch movies only once
-  const fetchData = async () => {
-    const moviesData = await searchMovies('');
-    setMovies(moviesData);
+    loadAllMovies();
+    loadWatchlist();
+  }, []);
+
+  const handleSearch = async () => {
+    setSearchError('');
+    const results = await searchMovies(searchTerm);
+    if (results.length === 0) {
+      setSearchError('🚫 Movie title not available.');
+    }
+    setSearchResults(results);
   };
 
-  fetchData();
-  loadWatchlist(); // Watchlist can change, so it's okay to reload
-}, []);
+  const handleAddToWatchlist = async (movie) => {
+    try {
+      await addMovie(movie);
+      await loadWatchlist();
+      alert(`🎉 "${movie.title}" added to watchlist!`);
+    } catch (err) {
+      alert('Failed to add movie: ' + err.message);
+    }
+  };
+
+  const handleRemove = async (watchItemId) => {
+    try {
+      await removeMovie(watchItemId);
+      await loadWatchlist();
+    } catch (error) {
+      alert('Failed to remove movie: ' + error.message);
+    }
+  };
 
   return (
-  <section>
-    <h1>🎬 Movie Watchlist</h1>
-    <SearchBar search={query} onSearchChange={setQuery} />
+    <div style={{ backgroundColor: '#0C2340', color: '#C99700', minHeight: '100vh', padding: '2rem' }}>
+      <h1 style={{ fontSize: '2rem' }}>🎬 Explore Movies</h1>
 
-      <div className="grid">
-        <ul className="movie-list">
-          {filtered.map((m) => (
-            <li key={m.id} onClick={() => handleAddToWatchlist(m)}>
-              {m.title} ({m.year})
-            </li>
+      {/* Dropdown Selection */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label htmlFor="movieDropdown">🎞️ Select Movie:</label><br />
+        <select
+          id="movieDropdown"
+          onChange={(e) => {
+            const movie = allMovies.find(m => m.objectId === e.target.value);
+            setSelectedMovie(movie);
+          }}
+          style={{
+            width: '60%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '5px',
+            marginTop: '0.5rem'
+          }}
+        >
+          <option value="">-- Choose a movie --</option>
+          {allMovies.map(movie => (
+            <option key={movie.objectId} value={movie.objectId}>
+              {movie.title} ({movie.year})
+            </option>
           ))}
-        </ul>
-
-        <MoviesDisplay movies={filtered} onAddMovie={handleAddToWatchlist} />
-        <Watchlist list={watchlist} onRemove={handleRemoveFromWatchlist} />
+        </select>
+        {selectedMovie && (
+          <button
+            onClick={() => handleAddToWatchlist(selectedMovie)}
+            style={{
+              marginLeft: '1rem',
+              backgroundColor: '#C99700',
+              color: '#0C2340',
+              border: 'none',
+              padding: '0.5rem 1rem',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            ➕ Add to Watchlist
+          </button>
+        )}
       </div>
-    </section>
+
+      {/* Search Feature */}
+      <div style={{ marginBottom: '2rem' }}>
+        <label htmlFor="searchInput">🔍 Search by Title:</label><br />
+        <input
+          id="searchInput"
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            width: '60%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '5px',
+            marginTop: '0.5rem'
+          }}
+        />
+        <button
+          onClick={handleSearch}
+          style={{
+            marginLeft: '1rem',
+            backgroundColor: '#C99700',
+            color: '#0C2340',
+            border: 'none',
+            padding: '0.5rem 1rem',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          🔍 Search
+        </button>
+        {searchError && <p style={{ color: 'red', marginTop: '0.5rem' }}>{searchError}</p>}
+        {searchResults.map(movie => (
+          <div key={movie.objectId} style={{ marginTop: '1rem' }}>
+            <strong>{movie.title}</strong> ({movie.year}) - {movie.genre}
+            <button
+              onClick={() => handleAddToWatchlist(movie)}
+              style={{
+                marginLeft: '1rem',
+                backgroundColor: '#C99700',
+                color: '#0C2340',
+                border: 'none',
+                padding: '0.3rem 0.6rem',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              ➕ Add to Watchlist
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Watchlist Toggle */}
+      <details style={{ marginTop: '2rem' }}>
+        <summary style={{
+          backgroundColor: '#C99700',
+          color: '#0C2340',
+          padding: '0.75rem',
+          borderRadius: '5px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          fontSize: '1rem'
+        }}>
+          🎥 My Movie Watchlist
+        </summary>
+        <Watchlist watchlist={watchlist} removeMovie={handleRemove} />
+      </details>
+    </div>
   );
 };
 

@@ -1,27 +1,38 @@
-// Setting up the protected route service for the app
-// import react and user info from other pages
-import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { checkUser } from "../Auth/authservices";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import Parse from 'parse';
 
-// Defining the protected route element
-const ProtectedRoute = ({ element: Component, ...rest }) => {
-  console.log("element: ", Component);
-  const navigate = useNavigate();
-  const goBackHandler = () => {
-    // Redirect to about us page if not logged in
-    navigate("../Auth/about");
-  };
-  // Check if the user is authorized and if not display an error
-  if (checkUser()) {
-    return <Component />;
-  } else {
+const ProtectedRoute = ({ children }) => {
+  const user = Parse.User.current();
+
+  if (!user) {
     return (
-      <div>
-        <p>Unauthorized!</p> <button onClick={goBackHandler}>Go Back.</button> 
+      <div style={unauthorizedStyle}>
+        <h2>Unauthorized!</h2>
+        <p>You must be logged in to view this page.</p>
+        <p>
+          Please go to the <a href="/about" style={linkStyle}>About</a> page to log in or register.
+        </p>
       </div>
     );
   }
+
+  // ✅ Always return children if logged in
+  return <>{children}</>;
+};
+
+const unauthorizedStyle = {
+  backgroundColor: '#0C2340',
+  color: '#C99700',
+  textAlign: 'center',
+  padding: '3rem',
+  minHeight: '100vh',
+};
+
+const linkStyle = {
+  color: '#C99700',
+  fontWeight: 'bold',
+  textDecoration: 'underline',
 };
 
 export default ProtectedRoute;

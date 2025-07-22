@@ -1,34 +1,38 @@
-// This Parse model interacts with the Movies database
+// src/Models/MoviesModel.js
 import Parse from 'parse';
 
-// Correct class name from Back4App is "Movies" (plural)
-const Movie = Parse.Object.extend('Movies');
-
-/**
- * Search for movies in the Parse database based on a search term.
- * Returns a formatted list of movie objects.
- * 
- * @param {string} searchTerm - The title (or partial title) to search for
- * @returns {Promise<Array>} - A list of movies with id, title, year, and genre
- */
-export async function searchMovies(searchTerm) {
-  const query = new Parse.Query(Movie);
-  query.matches('title', searchTerm, 'i'); // Case-insensitive match
-  query.ascending('title'); // Sort alphabetically
-
+// Fetch all available movies (no limit)
+export async function fetchAvailableMovies() {
+  const query = new Parse.Query('Movies');
+  query.limit(1000); // Ensures we fetch up to 1000 movies
   try {
     const results = await query.find();
-    console.log("Fetched movies from Parse:", results); // Debugging output
-
-    // Format the returned Parse objects into plain JS objects
     return results.map(movie => ({
-      id: movie.id,
-      title: movie.get('title'),
-      year: movie.get('year'),
-      genre: movie.get('genre'),
+      objectId: movie.id,
+      title: movie.get("title"),
+      year: movie.get("year"),
+      genre: movie.get("genre"),
     }));
   } catch (error) {
-    console.error('Error fetching movies:', error);
-    return []; // Return empty list on error
+    console.error("Failed to fetch movies:", error);
+    return [];
+  }
+}
+
+// Search for movies by title (case-insensitive)
+export async function searchMovies(searchTerm) {
+  const query = new Parse.Query('Movies');
+  query.matches("title", searchTerm, "i");
+  try {
+    const results = await query.find();
+    return results.map(movie => ({
+      objectId: movie.id,
+      title: movie.get("title"),
+      year: movie.get("year"),
+      genre: movie.get("genre"),
+    }));
+  } catch (error) {
+    console.error("Search failed:", error);
+    return [];
   }
 }
