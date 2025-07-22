@@ -1,5 +1,5 @@
 // This is the parse modeling for the movie reccomendation feature
-import Parse from "parse";
+import Parse from 'parse';
 const Movie = Parse.Object.extend("Movies");
 const WatchItem = Parse.Object.extend("WatchItem");
 
@@ -26,7 +26,7 @@ function parseEra(eraString) {
 // Function to reccomend to user a movie based on their movie preferences
 export async function getRec() {
     // Check if the user is logged in
-    const currentUser = parse.User.current();
+    const currentUser = Parse.User.current();
     if (!currentUser) {
         console.error("You are not logged in!");
         return null;
