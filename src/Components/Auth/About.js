@@ -1,34 +1,28 @@
-// This is the first page users will see when they enter website
-// This is a simple About component for the Movie Watchlist application.
-// It displays information about the application when the user visits the about page.
-// import react features and other necessary files
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import { checkUser } from "./authservices";
+import React from 'react';
 
 function About() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (checkUser()) {
-      alert("You are already logged in");
-      navigate("/");
-    }
-  }, [navigate]);
-
   return (
-    <div>
-      <h1>About This App</h1>
-      <p>
-        Our movie watchlist app allows you to explore our catalogue of movies and add them to your watchlist!
+    <div
+      style={{
+        backgroundColor: '#002654', // Notre Dame blue
+        color: '#fcbf49', // Notre Dame gold
+        padding: '2rem',
+        minHeight: '100vh',
+        textAlign: 'center',
+        fontFamily: 'Arial, sans-serif',
+      }}
+    >
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+        About Movie Watchlist 🎬
+      </h1>
+      <p style={{ fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
+        Welcome to the Notre Dame Movie Watchlist App! This platform helps you search,
+        save, and manage your favorite movies. Whether you're looking for classics or
+        new releases, build a watchlist that’s as elite as the Fighting Irish! 🍿✨
       </p>
-
-      {/* ✅ Use absolute paths and add spacing */}
-      <Link to="/register"><button>Register</button></Link>
-      <br /><br />
-      <Link to="/login"><button>Login</button></Link>
     </div>
   );
 }
 
 export default About;
+// About.js - Displays information about the app

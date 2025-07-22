@@ -85,7 +85,6 @@ const MainMovie = () => {
 
   return (
   <section>
-    <button onClick={handleLogout}>Logout</button>
     <h1>🎬 Movie Watchlist</h1>
     <SearchBar search={query} onSearchChange={setQuery} />
 
